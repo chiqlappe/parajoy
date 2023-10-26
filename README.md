@@ -4,6 +4,8 @@ PC-8001のパラレルポートをジョイポートにするドライバとゲ�
 <dl>
   <dt>parajoy.asz</dt>
   <dd>ドライバ本体</dd>
+  <dt>schematic.png</dt>
+  <dd>ジョイポートの回路図</dd>
   <dt>scramble_patch.asz</dt>
   <dd>"SCRAMBLE"用パッチ</dd>
   <dt>planet_taizer_patch.asz</dt>
