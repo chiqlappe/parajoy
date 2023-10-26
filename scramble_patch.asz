@@ -1,0 +1,122 @@
+
+;-------------------------------
+;PC-8001 "SCRAMBLE" 用ジョイポートパッチ
+;
+;ゲーム本体のプログラムをロードしてからこのパッチを実行して下さい
+;-------------------------------
+
+START	equ	$9000
+GAME	equ	$D55B		;SCRAMBLEの開始アドレス
+
+
+	org	START
+
+	LD	HL,P0
+	CALL	PATCHER
+	JP	GAME
+
+
+;-------------------------------
+;パッチ当て処理
+;IN	HL=パッチデータ開始アドレス
+;-------------------------------
+PATCHER:
+.L1:	LD	E,(HL)
+	INC	HL
+	LD	D,(HL)
+	INC	HL
+
+	LD	A,D
+	OR	E
+	RET	Z
+
+	LD	C,(HL)
+	INC	HL
+	LD	B,0
+	LDIR
+	JR	.L1
+
+
+;-------------------------------
+;パッチデータ
+; 対象アドレス
+; パッチの長さ
+; パッチ本体
+;-------------------------------
+P0:
+	dw	$DBB6
+	db	P4-$-1
+	CALL	PATCH00
+	NOP
+
+P4:
+	dw	$DBBB
+	db	P5-$-1
+	CALL	PATCH02
+	NOP
+
+P5:
+	dw	$DCAC
+	db	P6-$-1
+	CALL	PATCH03
+	NOP
+
+P6:
+	dw	$DDF1
+	db	P7-$-1
+	CALL	PATCH03
+	NOP
+
+P7:
+	dw	$E6C1
+	db	P8-$-1
+	CALL	PATCH04
+	NOP
+
+P8:
+	dw	$E6DC
+	db	P_END-$-1
+	CALL	PATCH05
+	NOP
+
+P_END:
+	dw	$0000
+
+
+;-------------------------------
+;パッチ用サブルーチン
+;-------------------------------
+
+PATCH00:
+	CALL	JOY0
+	XOR	$FF
+	RET
+
+
+PATCH02:
+	CALL	JOY1
+	XOR	$FF
+	RET
+
+
+PATCH03:
+	CALL	JOY5
+	XOR	$FF
+	RET
+
+
+PATCH04:
+	CALL	JOY5
+	AND	$04
+	RET
+
+
+PATCH05:
+	CALL	JOY5
+	AND	$01
+	RET
+
+
+include "parajoy.asz"
+
+
