@@ -18,7 +18,13 @@ READ_JOY:
 ;OUT	A=%1R1L1D11
 ;-------------------------------
 JOY0:
-	PUSH	DE
+	IN	A,($08)
+	BIT	5,A
+	JR	Z,.L1
+	IN	A,($00)
+	RET
+
+.L1:	PUSH	DE
 	LD	E,%11111111
 
 	LD	A,%11111101		;DOWN "2"
@@ -48,7 +54,13 @@ JOY0:
 ;OUT	A=%1111111U
 ;-------------------------------
 JOY1:
-	LD	A,%11111110		;UP "8"
+	IN	A,($08)
+	BIT	5,A
+	JR	Z,.L1
+	IN	A,($01)
+	RET
+
+.L1:	LD	A,%11111110		;UP "8"
 	CALL	READ_JOY
 
 	LD	A,%11111111
@@ -60,20 +72,26 @@ JOY1:
 ;-------------------------------
 ;ポート#5の疑似入力 INP(5)
 ;IN	-
-;OUT	A=%11111X1Z
+;OUT	A=%11111Z1X
 ;-------------------------------
 JOY5:
-	PUSH	DE
+	IN	A,($08)
+	BIT	5,A
+	JR	Z,.L1
+	IN	A,($05)
+	RET
+
+.L1:	PUSH	DE
 	LD	E,%11111111
 
-	LD	A,%11101111		;B1 "X"
+	LD	A,%11101111		;B2 "Z"
 	CALL	READ_JOY
 	RL	E
-	RL	E			;%111111X1
+	RL	E			;%111111Z1
 
-	LD	A,%11011111		;B2 "Z"
+	LD	A,%11011111		;B1 "X"
 	CALL	READ_JOY
-	RL	E			;%11111X1Z
+	RL	E			;%11111Z1X
 
 	LD	A,E
 
@@ -87,7 +105,13 @@ JOY5:
 ;OUT	A=%1X111111
 ;-------------------------------
 JOY9:
-	LD	A,%11101111		;B1 "X"
+	IN	A,($08)
+	BIT	5,A
+	JR	Z,.L1
+	IN	A,($09)
+	RET
+
+.L1:	LD	A,%11011111		;B1 "SPACE"
 	CALL	READ_JOY
 
 	LD	A,%11111111
