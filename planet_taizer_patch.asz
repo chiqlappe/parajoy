@@ -1,0 +1,121 @@
+
+;-------------------------------
+;PC-8001 "PLANET TAIZER" 用ジョイポートパッチ
+;
+;ゲーム本体のプログラムをロードしてからこのパッチを実行して下さい
+;-------------------------------
+
+START	equ	$E900
+GAME	equ	$ABCD		;ゲームの開始アドレス
+
+
+	org	START
+
+	LD	HL,P0
+	CALL	PATCHER
+	JP	GAME
+
+
+;-------------------------------
+;パッチ当て処理
+;IN	HL=パッチデータ開始アドレス
+;-------------------------------
+PATCHER:
+.L1:	LD	E,(HL)
+	INC	HL
+	LD	D,(HL)
+	INC	HL
+
+	LD	A,D
+	OR	E
+	RET	Z
+
+	LD	C,(HL)
+	INC	HL
+	LD	B,0
+	LDIR
+	JR	.L1
+
+
+;-------------------------------
+;パッチデータ
+; 対象アドレス
+; パッチの長さ
+; パッチ本体
+;-------------------------------
+P0:	dw	$B41F
+	db	P1-$-1
+	CALL	PATCH00
+	NOP
+
+P1:	dw	$B426
+	db	P2-$-1
+	CALL	PATCH01
+	NOP
+
+P2:	dw	$B42D
+	db	P3-$-1
+	CALL	PATCH02
+	NOP
+
+P3:
+
+P7:	dw	$B434
+	db	P8-$-1
+	CALL	PATCH04
+	NOP
+
+P8:	dw	$B645
+	db	P9-$-1
+	CALL	PATCH05
+	NOP
+
+P9:	dw	$B655
+	db	P10-$-1
+	CALL	PATCH06
+	NOP
+
+P10:
+
+P_END:
+	dw	$0000
+
+
+;-------------------------------
+;パッチ用サブルーチン
+;-------------------------------
+
+PATCH00:
+	CALL	JOY0
+	BIT	4,A
+	RET
+
+PATCH01:
+	CALL	JOY0
+	BIT	6,A
+	RET
+
+PATCH02:
+	CALL	JOY0
+	BIT	2,A
+	RET
+
+PATCH04:
+	CALL	JOY1
+	BIT	0,A		;"UP"
+	RET
+
+PATCH05:
+	CALL	JOY9
+	CP	$FF
+	RET
+
+PATCH06:
+	CALL	JOY9
+	BIT	6,A		;"SPACE"
+	RET
+
+
+
+include "parajoy.asz"
+
