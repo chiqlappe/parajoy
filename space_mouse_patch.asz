@@ -1,20 +1,18 @@
 
 ;-------------------------------
-;PC-8001 "PLANET TAIZER" 用ジョイポートパッチ
+;PC-8001 "スペースマウス" 用ジョイポートパッチ
 ;
 ;ゲーム本体のプログラムをロードしてからこのパッチを実行して下さい
 ;カナキーを押すとジョイポート入力が有効になります
 ;-------------------------------
 
-START	equ	$E900
-GAME	equ	$ABCD		;ゲームの開始アドレス
-
+START	equ	$9000
 
 	org	START
 
 	LD	HL,P0
 	CALL	PATCHER
-	JP	GAME
+	JP	$5C66
 
 
 ;-------------------------------
@@ -44,37 +42,20 @@ PATCHER:
 ; パッチの長さ
 ; パッチ本体
 ;-------------------------------
-P0:	dw	$B41F
+P0:
+	dw	$D8EF
 	db	4
 	CALL	PATCH00
 	NOP
 
-P1:	dw	$B426
+P1:
+	dw	$D8F9
 	db	4
 	CALL	PATCH01
 	NOP
 
-P2:	dw	$B42D
-	db	4
-	CALL	PATCH02
-	NOP
-
-P7:	dw	$B434
-	db	4
-	CALL	PATCH04
-	NOP
-
-P8:	dw	$B645
-	db	4
-	CALL	PATCH05
-	NOP
-
-P9:	dw	$B655
-	db	4
-	CALL	PATCH06
-	NOP
-
-P_END:	dw	$0000
+P_END:
+	dw	$0000
 
 
 ;-------------------------------
@@ -83,32 +64,13 @@ P_END:	dw	$0000
 
 PATCH00:
 	CALL	JOY0
-	BIT	4,A		;"LEFT"
+	BIT	4,A
 	RET
+
 
 PATCH01:
-	CALL	JOY0
-	BIT	6,A		;"RIGHT"
-	RET
-
-PATCH02:
-	CALL	JOY0
-	BIT	2,A		;"DOWN"
-	RET
-
-PATCH04:
 	CALL	JOY1
-	BIT	0,A		;"UP"
-	RET
-
-PATCH05:
-	CALL	JOY9
-	CP	$FF
-	RET
-
-PATCH06:
-	CALL	JOY9
-	BIT	6,A		;"SPACE"
+	BIT	0,A
 	RET
 
 
@@ -180,28 +142,5 @@ JOY1:
 	RLA
 
 	RET
-
-
-;-------------------------------
-;ポート#9入力 INP(9)
-;IN	-
-;OUT	A=%1S111111
-;-------------------------------
-JOY9:
-	IN	A,($08)
-	AND	%00100000
-	JR	Z,.L1
-	IN	A,($09)
-	RET
-
-.L1:	LD	A,%11011111		;B1 "SPACE"
-	CALL	READ_JOY
-
-	LD	A,%11111111
-	RET	C
-
-	LD	A,%10111111
-	RET
-
 
 
