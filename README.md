@@ -10,4 +10,6 @@ PC-8001のパラレルポートをジョイポートにするドライバとゲ�
   <dd>"SCRAMBLE"用パッチ</dd>
   <dt>planet_taizer_patch.asz</dt>
   <dd>"PLANET TAIZER"用パッチ</dd>
+  <dt>space_mouse_patch.asz</dt>
+  <dd>"SPACE MOUSE"用パッチ</dd>
 </dl>
